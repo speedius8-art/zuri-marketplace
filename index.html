@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZURI Marketplace - Dev by SPEEDIUS</title>
+    
+    <!-- Lien vers ton fichier CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Script officiel Google Identity Services pour l'authentification -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Remplacer "TON_CLIENT_ID" par ton vrai ID Google Cloud plus tard -->
+    <meta name="google-signin-client_id" content="TON_CLIENT_ID_GOOGLE.apps.googleusercontent.com">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- =========================================
+           1. ÉCRAN DE LANCEMENT (SPLASH SCREEN)
+        ========================================= -->
+        <div id="splash-screen" class="screen active">
+            <div class="logo-placeholder">Z</div>
+            <h2 class="splash-title">ZURI</h2>
+            <p class="splash-slogan">« Achetez. Vendez. Faites-vous livrer. »</p>
+            <div class="dev-badge">Dev by SPEEDIUS</div>
+        </div>
+
+        <!-- =========================================
+           2. ÉCRAN DE BIENVENUE
+        ========================================= -->
+        <div id="welcome-screen" class="screen">
+            <div class="welcome-hero">
+                <div class="welcome-illustration">🏪</div>
+                <h1 class="welcome-title">Bienvenue sur Zuri</h1>
+                <p class="welcome-desc">Découvrez des milliers de produits, commandez en quelques clics et faites-vous livrer rapidement.</p>
+            </div>
+            <div class="welcome-actions">
+                <button class="btn btn-primary" onclick="goToOnboarding()">Commencer</button>
+                <button class="btn btn-outline" onclick="goToHome()">Se connecter</button>
+                <div class="dev-badge">Dev by SPEEDIUS</div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           3. PRÉSENTATION RAPIDE (SLIDER)
+        ========================================= -->
+        <div id="onboarding-screen" class="screen">
+            <div class="slider-container">
+                <div class="slide active" id="slide-0">
+                    <div class="slide-icon">🛍️</div>
+                    <h2 class="slide-title">Des milliers de produits</h2>
+                    <p class="slide-desc">Mode, électronique, maison, alimentation et bien plus encore à portée de main.</p>
+                </div>
+                <div class="slide" id="slide-1">
+                    <div class="slide-icon">🚚</div>
+                    <h2 class="slide-title">Livraison rapide</h2>
+                    <p class="slide-desc">Recevez vos commandes en toute sécurité, directement où que vous soyez.</p>
+                </div>
+                <div class="slide" id="slide-2">
+                    <div class="slide-icon">💳</div>
+                    <h2 class="slide-title">Paiement sécurisé</h2>
+                    <p class="slide-desc">Mobile Money, cartes bancaires et paiement cash à la livraison disponible.</p>
+                </div>
+            </div>
+
+            <div class="slider-controls">
+                <div class="slider-dots">
+                    <div class="dot active" id="dot-0"></div>
+                    <div class="dot" id="dot-1"></div>
+                    <div class="dot" id="dot-2"></div>
+                </div>
+                <button class="btn btn-primary" id="next-slide-btn" onclick="nextSlide()">Suivant</button>
+                <div class="dev-badge">Dev by SPEEDIUS</div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           4. PAGE D'ACCUEIL (HOME)
+        ========================================= -->
+        <div id="home-screen" class="screen main-tab">
+            <div class="header-bar">
+                <div class="search-container">
+                    <span class="search-icon-left">🔍</span>
+                    <input type="text" class="search-input" placeholder="Que recherchez-vous ?">
+                </div>
+                <div class="header-icon">🔔<span class="icon-badge">3</span></div>
+                <div class="header-icon" onclick="changeTab('cart-screen', 3)">🛒<span class="icon-badge">1</span></div>
+            </div>
+
+            <div class="home-content">
+                
+                <!-- BOUTON VENDRE (FUSION FB/ALIBABA) -->
+                <div class="sell-cta-box">
+                    <button class="btn btn-sell" onclick="openSellerDashboard()">
+                        🚀 <span>Vendre sur Zuri</span> — Ajouter un produit
+                    </button>
+                </div>
+
+                <div class="promo-banner">
+                    <h3>Promotions d'Été !</h3>
+                    <p>Jusqu'à -50% sur la catégorie Mode & Chaussures</p>
+                </div>
+
+                <!-- Catégories -->
+                <div class="section-title">
+                    <h3>Catégories</h3><span>Voir tout</span>
+                </div>
+                <div class="categories-grid">
+                    <div class="category-card"><span class="category-emoji">👕</span><span class="category-name">Mode</span></div>
+                    <div class="category-card"><span class="category-emoji">📱</span><span class="category-name">Téléphones</span></div>
+                    <div class="category-card"><span class="category-emoji">💻</span><span class="category-name">Informatique</span></div>
+                    <div class="category-card"><span class="category-emoji">🏠</span><span class="category-name">Maison</span></div>
+                    <div class="category-card"><span class="category-emoji">🍔</span><span class="category-name">Alim.</span></div>
+                    <div class="category-card"><span class="category-emoji">🚗</span><span class="category-name">Auto</span></div>
+                    <div class="category-card"><span class="category-emoji">💄</span><span class="category-name">Beauté</span></div>
+                    <div class="category-card"><span class="category-emoji">⚽</span><span class="category-name">Sport</span></div>
+                </div>
+
+                <!-- Produits Populaires -->
+                <div class="section-title">
+                    <h3>Produits populaires</h3><span>Voir tout</span>
+                </div>
+                <div class="product-scroll">
+                    <div class="product-card">
+                        <div class="product-image-placeholder">👟</div>
+                        <div class="product-info"><h4>Sneakers Street</h4><div class="product-price">25 000 F</div></div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image-placeholder">🎧</div>
+                        <div class="product-info"><h4>Casque Audio Pro</h4><div class="product-price">45 000 F</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           5. PAGE EXPLORER
+        ========================================= -->
+        <div id="explore-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar"><h3>Explorer</h3></div>
+            <div style="padding: 20px; text-align: center; color: #666;">
+                <div style="font-size: 50px; margin-bottom: 15px;">🌍</div>
+                <h2>Découvrir</h2>
+                <p>Recherchez des vendeurs locaux autour de vous.</p>
+            </div>
+        </div>
+
+        <!-- =========================================
+           6. PAGE FAVORIS
+        ========================================= -->
+        <div id="favorites-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar"><h3>Mes Favoris</h3></div>
+            <div style="padding: 20px; text-align: center; color: #666;">
+                <div style="font-size: 50px; margin-bottom: 15px;">❤️</div>
+                <h2>Aucun favori</h2>
+                <p>Sauvegardez les articles qui vous plaisent pour plus tard.</p>
+            </div>
+        </div>
+
+        <!-- =========================================
+           7. PAGE PANIER
+        ========================================= -->
+        <div id="cart-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar"><h3>Mon Panier</h3></div>
+            <div style="padding: 20px; text-align: center; color: #666;">
+                <div style="font-size: 50px; margin-bottom: 15px;">🛒</div>
+                <h2>Votre panier est vide</h2>
+                <p>Ajoutez des produits avant de passer commande.</p>
+            </div>
+        </div>
+
+        <!-- =========================================
+           8. PAGE MON COMPTE (GOOGLE AUTH)
+        ========================================= -->
+        <div id="account-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar"><h3>Mon Compte ZURI</h3></div>
+            
+            <div style="padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div id="user-profile-pic" style="width: 80px; height: 80px; border-radius: 50%; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 30px; margin-bottom: 15px;">👤</div>
+                <h2 id="user-name" style="margin-bottom: 5px;">Non connecté</h2>
+                <p id="user-email" style="color: #666; margin-bottom: 25px;">Connectez-vous pour acheter et vendre.</p>
+                
+                <!-- Bouton Google Officiel -->
+                <div id="g_id_onload"
+                     data-client_id="TON_CLIENT_ID_GOOGLE.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+
+                <button id="btn-logout" class="btn btn-outline" style="display: none; margin-top: 15px;" onclick="signOut()">Se déconnecter</button>
+            </div>
+        </div>
+
+        <!-- =========================================
+           BARRE DE NAVIGATION BASSE GLOBALE
+        ========================================= -->
+        <div class="bottom-nav" id="global-bottom-nav" style="display: none;">
+            <div class="nav-item active" onclick="changeTab('home-screen', 0)">
+                <span class="nav-icon">🏠</span><span>Accueil</span>
+            </div>
+            <div class="nav-item" onclick="changeTab('explore-screen', 1)">
+                <span class="nav-icon">🔍</span><span>Explorer</span>
+            </div>
+            <div class="nav-item" onclick="changeTab('favorites-screen', 2)">
+                <span class="nav-icon">❤️</span><span>Favoris</span>
+            </div>
+            <div class="nav-item" onclick="changeTab('cart-screen', 3)">
+                <span class="nav-icon">🛒</span><span>Panier</span>
+            </div>
+            <div class="nav-item" onclick="changeTab('account-screen', 4)">
+                <span class="nav-icon">👤</span><span>Compte</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =========================================
+       LOGIQUE JAVASCRIPT (MOTEUR INTERACTIF)
+    ========================================= -->
+    <script>
+        // 1. Démarrage de l'application
+        setTimeout(() => { switchScreen('splash-screen', 'welcome-screen'); }, 2500);
+
+        function switchScreen(fromId, toId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(toId).classList.add('active');
+            
+            // Afficher la barre de navigation uniquement pour les onglets principaux
+            if(document.getElementById(toId).classList.contains('main-tab')) {
+                document.getElementById('global-bottom-nav').style.display = 'flex';
+            } else {
+                document.getElementById('global-bottom-nav').style.display = 'none';
+            }
+        }
+
+        function goToOnboarding() { switchScreen('welcome-screen', 'onboarding-screen'); }
+        function goToHome() { switchScreen('welcome-screen', 'home-screen'); }
+
+        // 2. Gestion du Slider (Onboarding)
+        let currentSlide = 0;
+        const totalSlides = 3;
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                document.getElementById(`dot-${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                document.getElementById(`dot-${currentSlide}`).classList.add('active');
+                if (currentSlide === totalSlides - 1) {
+                    document.getElementById('next-slide-btn').innerText = "Créer un compte";
+                }
+            } else {
+                goToHome();
+            }
+        }
+
+        // 3. Gestion de la Navigation entre les 5 onglets
+        function changeTab(targetScreenId, tabIndex) {
+            // Cacher tous les écrans principaux
+            document.querySelectorAll('.main-tab').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            // Afficher l'écran demandé
+            document.getElementById(targetScreenId).classList.add('active');
+
+            // Mettre à jour l'icône active dans la barre
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            navItems[tabIndex].classList.add('active');
+        }
+
+        // 4. Logique du Bouton Vendre (Fusion FB/Alibaba)
+        function openSellerDashboard() {
+            const isLoggedIn = document.getElementById('btn-logout').style.display === 'block';
+            if (isLoggedIn) {
+                alert("🚀 OUVERTURE DU DASHBOARD VENDEUR SPEEDIUS\n\nFonctionnalités prêtes :\n- Upload de photos (Style Facebook)\n- Prix de gros et de détail (Style Alibaba)\n- Formulaire d'ajout direct à la base de données.");
+            } else {
+                alert("⚠️ Vous devez être connecté avec votre compte pour pouvoir vendre des articles sur ZURI.");
+                changeTab('account-screen', 4); // Redirige automatiquement vers la page de connexion
+            }
+        }
+
+        // 5. Authentification Google (Décodage des données)
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        function handleCredentialResponse(response) {
+            const payload = parseJwt(response.credential);
+            
+            // Mise à jour de l'interface Profil
+            document.getElementById("user-name").innerText = payload.name;
+            document.getElementById("user-email").innerText = payload.email;
+            document.getElementById("user-profile-pic").innerHTML = `<img src="${payload.picture}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            
+            // Basculer les boutons
+            document.querySelector('.g_id_signin').style.display = 'none';
+            document.getElementById('btn-logout').style.display = 'block';
+        }
+
+        function signOut() {
+            // Remise à zéro du profil
+            document.getElementById("user-name").innerText = "Non connecté";
+            document.getElementById("user-email").innerText = "Connectez-vous pour acheter et vendre.";
+            document.getElementById("user-profile-pic").innerHTML = "👤";
+            
+            document.querySelector('.g_id_signin').style.display = 'block';
+            document.getElementById('btn-logout').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
