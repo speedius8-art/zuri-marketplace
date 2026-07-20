@@ -195,6 +195,54 @@
         </div>
 
         <!-- =========================================
+           9. PAGE ESPACE VENDEUR (AJOUT DE PRODUIT)
+        ========================================= -->
+        <div id="seller-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar">
+                <span style="cursor:pointer; font-size:20px;" onclick="goToHome()">⬅️ Retour</span>
+                <h3 style="margin-left: 10px;">Vendre un article</h3>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #666; margin-bottom: 20px;">Ajoutez une belle photo et des détails précis pour vendre plus vite.</p>
+                
+                <form id="add-product-form">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Nom du produit</label>
+                        <input type="text" id="prod-nom" placeholder="Ex: T-shirt Oversize, Sneakers..." required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Description</label>
+                        <textarea id="prod-desc" placeholder="Taille, état, couleur, marque..." required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; height:80px; box-sizing:border-box;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Prix (en FCFA)</label>
+                        <input type="number" id="prod-prix" placeholder="Ex: 15000" required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Catégorie</label>
+                        <select id="prod-cat" required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                            <option value="Mode">Mode & Vêtements</option>
+                            <option value="Chaussures">Chaussures</option>
+                            <option value="Accessoires">Accessoires</option>
+                            <option value="Électronique">Électronique</option>
+                            <option value="Beauté">Beauté</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 25px;">
+                        <label style="font-weight: bold; font-size: 14px;">Photo réelle du produit</label>
+                        <input type="file" id="prod-image" accept="image/*" required style="width:100%; padding:10px; margin-top:5px; background:#fff; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btn-submit-product" style="width:100%;">Publier l'article 🚀</button>
+                </form>
+            </div>
+        </div>
+        <!-- =========================================
            BARRE DE NAVIGATION BASSE GLOBALE
         ========================================= -->
         <div class="bottom-nav" id="global-bottom-nav" style="display: none;">
@@ -273,14 +321,22 @@
         }
 
         // 4. Logique du Bouton Vendre (Fusion FB/Alibaba)
-        function openSellerDashboard() {
+       function openSellerDashboard() {
             const isLoggedIn = document.getElementById('btn-logout').style.display === 'block';
             if (isLoggedIn) {
-                alert("🚀 OUVERTURE DU DASHBOARD VENDEUR SPEEDIUS\n\nFonctionnalités prêtes :\n- Upload de photos (Style Facebook)\n- Prix de gros et de détail (Style Alibaba)\n- Formulaire d'ajout direct à la base de données.");
+                // Si connecté, on ouvre le nouvel écran vendeur
+                changeTab('seller-screen', 0); 
+                document.getElementById('global-bottom-nav').style.display = 'none'; // On cache le menu du bas pour laisser de la place
             } else {
-                alert("⚠️ Vous devez être connecté avec votre compte pour pouvoir vendre des articles sur ZURI.");
-                changeTab('account-screen', 4); // Redirige automatiquement vers la page de connexion
+                alert("⚠️ Vous devez être connecté pour vendre des articles.");
+                changeTab('account-screen', 4); 
             }
+        }
+        
+        // Fonction pour revenir à l'accueil depuis l'espace vendeur
+        function goToHome() {
+            changeTab('home-screen', 0);
+            document.getElementById('global-bottom-nav').style.display = 'flex';
         }
 
         // 5. Authentification Google (Décodage des données)
@@ -315,6 +371,91 @@
             document.querySelector('.g_id_signin').style.display = 'block';
             document.getElementById('btn-logout').style.display = 'none';
         }
+        // ==========================================
+        // 6. CONNEXION AVEC LE SERVEUR BACK-END
+        // ==========================================
+        const SERVEUR_URL = 'http://localhost:3000';
+
+        // A. SOUMETTRE LE FORMULAIRE DE VENTE
+        document.getElementById('add-product-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Empêche la page de se recharger
+            
+            const btnSubmit = document.getElementById('btn-submit-product');
+            btnSubmit.innerText = "Publication en cours... ⏳";
+            btnSubmit.disabled = true;
+
+            // On utilise FormData car on envoie un fichier (la photo) en plus du texte
+            const formData = new FormData();
+            formData.append('nom_produit', document.getElementById('prod-nom').value);
+            formData.append('description', document.getElementById('prod-desc').value);
+            formData.append('prix', document.getElementById('prod-prix').value);
+            formData.append('categorie', document.getElementById('prod-cat').value);
+            formData.append('image', document.getElementById('prod-image').files[0]);
+            
+            // On utilise un faux ID de boutique (1) pour le moment, le temps de gérer les boutiques
+            formData.append('boutique_id', 1); 
+
+            try {
+                const response = await fetch(`${SERVEUR_URL}/api/produits`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert("✅ " + data.message);
+                    this.reset(); // Vide le formulaire
+                    goToHome(); // Retour à l'accueil
+                    chargerProduits(); // Actualise la liste des articles
+                } else {
+                    alert("❌ Erreur : " + data.message);
+                }
+            } catch (error) {
+                console.error("Erreur de connexion:", error);
+                alert("Impossible de contacter le serveur local. Est-il bien allumé ?");
+            } finally {
+                btnSubmit.innerText = "Publier l'article 🚀";
+                btnSubmit.disabled = false;
+            }
+        });
+
+        // B. CHARGER LES PRODUITS RÉELS SUR LA PAGE D'ACCUEIL
+        async function chargerProduits() {
+            try {
+                const response = await fetch(`${SERVEUR_URL}/api/produits`);
+                const produits = await response.json();
+                
+                const conteneur = document.querySelector('.product-scroll');
+                conteneur.innerHTML = ''; // On vide les faux produits en HTML
+                
+                if (produits.length === 0) {
+                    conteneur.innerHTML = '<p style="padding:20px; color:#666;">Aucun article en vente pour le moment.</p>';
+                    return;
+                }
+
+                // On crée une carte HTML pour chaque produit venant de MySQL
+                produits.forEach(prod => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div style="width: 140px; height: 140px; border-radius: 12px; overflow: hidden; background: #eee;">
+                            <img src="${SERVEUR_URL}${prod.image_url}" alt="${prod.nom_produit}" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        <div class="product-info" style="padding: 10px;">
+                            <h4 style="font-size: 14px; margin: 0 0 5px 0;">${prod.nom_produit}</h4>
+                            <div class="product-price" style="font-weight: bold; color: #E74C3C;">${prod.prix} FCFA</div>
+                        </div>
+                    `;
+                    conteneur.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Erreur chargement produits:", error);
+            }
+        }
+
+        // On lance le chargement des vrais produits dès que la page s'ouvre
+        window.onload = chargerProduits;
     </script>
 </body>
 </html>
