@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZURI Marketplace - Niamey</title>
+    <!-- Chargement de style.css séparé -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- =========================================
+           1. ÉCRAN DE LANCEMENT (SPLASH SCREEN)
+        ========================================= -->
+        <div id="splash-screen" class="screen active">
+            <div class="logo-placeholder">Z</div>
+            <h2 class="splash-title">ZURI</h2>
+            <p class="splash-slogan">« Achetez. Vendez. Faites-vous livrer. »</p>
+            <div class="dev-badge">Dev by SPEEDIUS</div>
+        </div>
+
+        <!-- =========================================
+           2. ÉCRAN DE BIENVENUE
+        ========================================= -->
+        <div id="welcome-screen" class="screen">
+            <div class="welcome-hero">
+                <div class="welcome-illustration">🏪</div>
+                <h1 class="welcome-title">Bienvenue sur Zuri</h1>
+                <p class="welcome-desc">Découvrez des milliers de produits à Niamey, commandez en quelques clics.</p>
+            </div>
+            <div class="welcome-actions">
+                <button class="btn btn-primary" onclick="goToOnboarding()">Commencer</button>
+                <button class="btn btn-outline" onclick="goToHome()">Se connecter</button>
+                <div class="dev-badge">Dev by SPEEDIUS</div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           3. PRÉSENTATION RAPIDE (SLIDER)
+        ========================================= -->
+        <div id="onboarding-screen" class="screen">
+            <div class="slider-container">
+                <div class="slide active" id="slide-0">
+                    <div class="slide-icon">🛍️</div>
+                    <h2 class="slide-title">Des milliers de produits</h2>
+                    <p class="slide-desc">Vêtements, chaussures, accessoires des boutiques de Niamey à portée de main.</p>
+                </div>
+                <div class="slide" id="slide-1">
+                    <div class="slide-icon">🚚</div>
+                    <h2 class="slide-title">Livraison rapide</h2>
+                    <p class="slide-desc">Recevez vos commandes en toute sécurité, où que vous soyez à Niamey.</p>
+                </div>
+                <div class="slide" id="slide-2">
+                    <div class="slide-icon">💳</div>
+                    <h2 class="slide-title">Paiement sécurisé</h2>
+                    <p class="slide-desc">Mobile Money, cartes bancaires et paiement cash à la livraison.</p>
+                </div>
+            </div>
+
+            <div class="slider-controls">
+                <div class="slider-dots">
+                    <div class="dot active" id="dot-0"></div>
+                    <div class="dot" id="dot-1"></div>
+                    <div class="dot" id="dot-2"></div>
+                </div>
+                <button class="btn btn-primary" id="next-slide-btn" onclick="nextSlide()">Suivant</button>
+                <div class="dev-badge">Dev by SPEEDIUS</div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           4. PAGE D'ACCUEIL (HOME)
+        ========================================= -->
+        <div id="home-screen" class="screen main-tab">
+            <div class="header-bar">
+                <div style="font-weight: bold; font-size: 20px; margin-right: 15px; color:#E74C3C;">ZURI</div>
+                
+                <!-- LA BARRE DE RECHERCHE DYNAMIQUE -->
+                <div class="search-container" style="flex-grow: 1;">
+                    <span class="search-icon-left">🔍</span>
+                    <input type="search" id="main-search" class="search-input" placeholder="Que recherchez-vous ?">
+                </div>
+
+                <div class="header-icon" style="margin-left: 15px;">🔔<span class="icon-badge">3</span></div>
+                <div class="header-icon" onclick="changeTab('cart-screen', 3)">🛒<span class="icon-badge">1</span></div>
+            </div>
+
+            <div class="home-content">
+                
+                <!-- BOUTON VENDRE (activé/désactivé selon le statut) -->
+                <div class="sell-cta-box" id="sell-cta-container">
+                    <button class="btn btn-sell" id="btn-open-sell-form" onclick="openSellerDashboard()">
+                        🚀 <span>Vendre sur Zuri</span> — Ajouter un produit
+                    </button>
+                </div>
+
+                <div class="promo-banner">
+                    <h3>Promotions de Niamey !</h3>
+                    <p>Jusqu'à -30% sur la catégorie Accessoires locaux</p>
+                </div>
+
+                <!-- Chips / Boutons de catégories (activent le filtre) -->
+                <div class="categories-scroll" style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;">
+                    <button class="category-chip active" id="chip-Tous" onclick="filtrerCategorie('Tous')">Tous</button>
+                    <button class="category-chip" id="chip-Mode" onclick="filtrerCategorie('Mode')">Mode</button>
+                    <button class="category-chip" id="chip-Chaussures" onclick="filtrerCategorie('Chaussures')">Chaussures</button>
+                    <button class="category-chip" id="chip-Accessoires" onclick="filtrerCategorie('Accessoires')">Accessoires</button>
+                    <button class="category-chip" id="chip-Électronique" onclick="filtrerCategorie('Électronique')">Électronique</button>
+                    <button class="category-chip" id="chip-Beauté" onclick="filtrerCategorie('Beauté')">Beauté</button>
+                </div>
+                
+                <div class="section-title">
+                    <h3>Produits populaires</h3><span>Voir tout</span>
+                </div>
+                <div class="product-scroll" id="product-list-container">
+                    <!-- Les produits s'afficheront ici dynamiquement via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- =========================================
+           8. PAGE MON COMPTE (GOOGLE AUTH OBLIGATOIRE)
+        ========================================= -->
+        <div id="account-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar"><h3>Mon Compte ZURI</h3></div>
+            
+            <div style="padding: 24px; display: flex; flex-direction: column; align-items: center; text-align: center;">
+                <div id="user-profile-pic" style="width: 80px; height: 80px; border-radius: 50%; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 30px; margin-bottom: 15px;">👤</div>
+                <h2 id="user-name" style="margin-bottom: 5px;">Non connecté</h2>
+                <p id="user-email" style="color: #666; margin-bottom: 25px;">Connectez-vous pour acheter et vendre.</p>
+                
+                <!-- Bouton Google Officiel -->
+                <div id="g_id_onload"
+                     data-client_id="ta_cle_client_google_officielle.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+
+                <button id="btn-logout" class="btn btn-outline" style="display: none; margin-top: 15px;" onclick="signOut()">Se déconnecter</button>
+            </div>
+        </div>
+
+        <!-- =========================================
+           9. PAGE ESPACE VENDEUR (AJOUT DE PRODUIT - SÉCURISÉ)
+        ========================================= -->
+        <div id="seller-screen" class="screen main-tab" style="background-color: #F9F9F9;">
+            <div class="header-bar">
+                <span style="cursor:pointer; font-size:20px;" onclick="goToHome()">⬅️ Retour Accueil</span>
+                <h3 style="margin-left: 10px;">Vendre un article</h3>
+            </div>
+            
+            <div style="padding: 20px;">
+                <p style="color: #666; margin-bottom: 20px;">Ajoutez des détails précis et une **photo de haute qualité** pour vendre plus vite.</p>
+                
+                <form id="add-product-form">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Nom du produit</label>
+                        <input type="text" id="prod-nom" placeholder="Ex: T-shirt Oversize, Sneakers..." required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Description</label>
+                        <textarea id="prod-desc" placeholder="Taille, état, couleur, marque..." required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; height:80px; box-sizing:border-box;"></textarea>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Prix (en FCFA)</label>
+                        <input type="number" id="prod-prix" placeholder="Ex: 15000" required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold; font-size: 14px;">Catégorie</label>
+                        <select id="prod-cat-id" required style="width:100%; padding:12px; margin-top:5px; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                            <option value="1">Mode & Vêtements</option>
+                            <option value="2">Chaussures</option>
+                            <option value="3">Accessoires</option>
+                            <option value="4">Électronique</option>
+                            <option value="5">Beauté</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 25px;">
+                        <label style="font-weight: bold; font-size: 14px;">Photo réelle du produit (Haute Qualité)</label>
+                        <input type="file" id="prod-image" accept="image/*" required style="width:100%; padding:10px; margin-top:5px; background:#fff; border-radius:8px; border:1px solid #ddd; box-sizing:border-box;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btn-submit-product" style="width:100%;">Publier l'article 🚀</button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- =========================================
+           BARRE DE NAVIGATION BASSE GLOBALE
+        ========================================= -->
+        <div class="bottom-nav" id="global-bottom-nav" style="display: none;">
+            <div class="nav-item active" onclick="changeTab('home-screen', 0)">
+                <span class="nav-icon">🏠</span><span>Accueil</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🔍</span><span>Explorer</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">❤️</span><span>Favoris</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🛒</span><span>Panier</span>
+            </div>
+            <div class="nav-item" onclick="changeTab('account-screen', 4)">
+                <span class="nav-icon">👤</span><span>Compte</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =========================================
+       LOGIQUE JAVASCRIPT (MOTEUR INTERACTIF)
+    ========================================= -->
+    <script>
+        // --- 1. Démarrage de l'application ---
+        setTimeout(() => { switchScreen('splash-screen', 'welcome-screen'); }, 2500);
+
+        function switchScreen(fromId, toId) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(toId).classList.add('active');
+            
+            if(document.getElementById(toId).classList.contains('main-tab')) {
+                document.getElementById('global-bottom-nav').style.display = 'flex';
+            } else {
+                document.getElementById('global-bottom-nav').style.display = 'none';
+            }
+        }
+
+        function goToOnboarding() { switchScreen('welcome-screen', 'onboarding-screen'); }
+        function goToHome() { 
+            switchScreen('welcome-screen', 'home-screen'); 
+            chargerProduits(); // Charge les produits dès qu'on arrive sur l'accueil
+        }
+
+        let currentSlide = 0;
+        const totalSlides = 3;
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+                document.getElementById(`dot-${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide-${currentSlide}`).classList.add('active');
+                document.getElementById(`dot-${currentSlide}`).classList.add('active');
+                if (currentSlide === totalSlides - 1) {
+                    document.getElementById('next-slide-btn').innerText = "Créer un compte";
+                }
+            } else {
+                goToHome();
+            }
+        }
+
+        function changeTab(targetScreenId, tabIndex) {
+            document.querySelectorAll('.main-tab').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(targetScreenId).classList.add('active');
+
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+            if(navItems[tabIndex]) navItems[tabIndex].classList.add('active');
+        }
+
+        // --- 2. AUTHENTIFICATION GOOGLE (Côté Client) ---
+        // Le bouton Google Officiel appelle cette fonction après la connexion.
+        function parseJwt(token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        }
+
+        function handleCredentialResponse(response) {
+            const payload = parseJwt(response.credential);
+            
+            // Mise à jour de l'interface Profil
+            document.getElementById("user-name").innerText = payload.name;
+            document.getElementById("user-email").innerText = payload.email;
+            document.getElementById("user-profile-pic").innerHTML = `<img src="${payload.picture}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">`;
+            
+            // Basculer les boutons
+            document.querySelector('.g_id_signin').style.display = 'none';
+            document.getElementById('btn-logout').style.display = 'block';
+            
+            // --- Cœur de la sécurité conceptuelle : Activer le bouton "Vendre" ---
+            document.getElementById('sell-cta-container').style.display = 'block';
+        }
+
+        function signOut() {
+            // Remise à zéro du profil
+            document.getElementById("user-name").innerText = "Non connecté";
+            document.getElementById("user-email").innerText = "Connectez-vous pour acheter et vendre.";
+            document.getElementById("user-profile-pic").innerHTML = "👤";
+            
+            document.querySelector('.g_id_signin').style.display = 'block';
+            document.getElementById('btn-logout').style.display = 'none';
+            
+            // Désactiver le bouton "Vendre"
+            document.getElementById('sell-cta-container').style.display = 'none';
+        }
+
+        // --- 3. CONNEXION AVEC LE SERVEUR BACK-END (Dynamique) ---
+        // Speedius doit changer cette URL pour la production.
+        const SERVEUR_URL = 'http://localhost:3000';
+
+        let categorieActuelle = 'Tous';
+
+        // Fonction qui va chercher les bons produits sur le serveur
+        async function chargerProduits(categorie = 'Tous', search = '') {
+            try {
+                // Construit l'adresse : http://localhost:3000/api/produits?categorie=Chaussures&search=nike
+                let url = `${SERVEUR_URL}/api/produits?categorie=${encodeURIComponent(categorie)}`;
+                if (search) {
+                    url += `&search=${encodeURIComponent(search)}`;
+                }
+
+                const response = await fetch(url);
+                const produits = await response.json();
+        
+                const conteneur = document.getElementById('product-list-container');
+                conteneur.innerHTML = ''; // On vide avant d'afficher
+        
+                if (produits.length === 0) {
+                    conteneur.innerHTML = '<p style="padding:20px; color:#666; width:100%; text-align:center;">Aucun article trouvé à Niamey.</p>';
+                    return;
+                }
+
+                // Pour chaque produit trouvé, on crée une carte Facebook Marketplace
+                produits.forEach(prod => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="product-image-grid-box">
+                            <img src="${SERVEUR_URL}${prod.image_url}" alt="${prod.nom_produit}">
+                        </div>
+                        <div class="product-info-marketplace">
+                            <h4 class="product-name-marketplace">${prod.nom_produit}</h4>
+                            <div class="product-price-marketplace">${new Intl.NumberFormat('fr-FR').format(prod.prix)} FCFA</div>
+                            <span class="product-category-marketplace">${prod.nom_categorie}</span>
+                            <span class="product-boutique-marketplace">🏪 ${prod.nom_boutique} — Niamey</span>
+                        </div>
+                        <div class="product-actions-marketplace">
+                             <button class="btn btn-marketplace">🛒 Ajouter</button>
+                        </div>
+                    `;
+                    conteneur.appendChild(card);
+                });
+            } catch (error) {
+                console.error("Erreur chargement produits ZURI:", error);
+            }
+        }
+
+        // --- 4. GESTION DES FILTRES ET BOUTONS ---
+
+        // Action quand on clique sur un bouton de catégorie
+        function filtrerCategorie(nomCategorie) {
+            // Mettre à jour les puces actives
+            document.querySelectorAll('.category-chip').forEach(chip => chip.classList.remove('active'));
+            document.getElementById(`chip-${nomCategorie}`).classList.add('active');
+            
+            categorieActuelle = nomCategorie;
+            const searchInput = document.getElementById('main-search');
+            const termeRecherche = searchInput ? searchInput.value : '';
+            chargerProduits(categorieActuelle, termeRecherche);
+        }
+
+        // Écoute la barre de recherche en direct pendant qu'on tape
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('main-search');
+            
+            if (searchInput) {
+                // S'active à chaque fois que tu tapes une lettre
+                searchInput.addEventListener('input', (e) => {
+                    chargerProduits(categorieActuelle, e.target.value);
+                });
+            }
+        });
+
+        // --- 5. GESTION DE LA PUBLICATION (Vendeur Sécurisé) ---
+
+        // Fonction pour ouvrir le nouvel écran vendeur
+        function openSellerDashboard() {
+            // --- Sécurité excessive conceptuelle : L'utilisateur doit être connecté ---
+            const isLoggedIn = document.getElementById('btn-logout').style.display === 'block';
+            if (isLoggedIn) {
+                changeTab('seller-screen', 0); 
+                document.getElementById('global-bottom-nav').style.display = 'none'; // On cache le menu du bas
+            } else {
+                alert("⚠️ ZURI Marketplace : Vous devez obligatoirement être connecté avec un compte Google vérifié pour vendre des articles.");
+                changeTab('account-screen', 4); 
+            }
+        }
+
+        // Fonction pour revenir à l'accueil depuis l'espace vendeur
+        function goToHome() {
+            changeTab('home-screen', 0);
+            document.getElementById('global-bottom-nav').style.display = 'flex';
+        }
+
+        // --- SOUMETTRE LE FORMULAIRE DE VENTE (Sécurisé) ---
+        document.getElementById('add-product-form').addEventListener('submit', async function(e) {
+            e.preventDefault(); 
+            
+            // --- Sécurité excessive conceptuelle : Authentification requise ---
+            const isLoggedIn = document.getElementById('btn-logout').style.display === 'block';
+            if (!isLoggedIn) {
+                alert("⚠️ ZURI Marketplace : Authentification Google obligatoire avant de publier.");
+                return changeTab('account-screen', 4); 
+            }
+
+            const btnSubmit = document.getElementById('btn-submit-product');
+            btnSubmit.innerText = "ZURI : Publication en cours... ⏳";
+            btnSubmit.disabled = true;
+
+            // On utilise FormData car on envoie une image réelle (Haute Qualité)
+            const formData = new FormData();
+            formData.append('nom_produit', document.getElementById('prod-nom').value);
+            formData.append('description', document.getElementById('prod-desc').value);
+            formData.append('prix', document.getElementById('prod-prix').value);
+            formData.append('categorie_id', document.getElementById('prod-cat-id').value);
+            formData.append('image', document.getElementById('prod-image').files[0]); // L'image réelle
+            
+            // On utilise un ID de boutique test (1)
+            formData.append('boutique_id', 1); 
+
+            try {
+                // --- Cœur de la sécurité conceptuelle : Le token Google doit être envoyé ici ---
+                // Le code réel est :
+                // const token = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+                // const response = await fetch(`${SERVEUR_URL}/api/produits`, {
+                //     method: 'POST',
+                //     headers: { 'Authorization': `Bearer ${token}` },
+                //     body: formData
+                // });
+                
+                // Pour la démo, on simule l'envoi d'un token factice.
+                const response = await fetch(`${SERVEUR_URL}/api/produits`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer test_session_token_google` },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert("✅ ZURI Marketplace Niamey : " + data.message);
+                    this.reset(); 
+                    goToHome(); // Retour à l'accueil
+                    chargerProduits(); // Actualise la liste
+                } else {
+                    // --- Concept de la Sécurité excessive (ex: 'pending_verification') ---
+                    alert("⚠️ " + data.message);
+                }
+            } catch (error) {
+                console.error("Erreur de connexion ZURI:", error);
+                alert("ZURI : Impossible de contacter le serveur local. Est-il bien allumé par Speedius ?");
+            } finally {
+                btnSubmit.innerText = "Publier l'article sur Zuri Niamey🚀";
+                btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
